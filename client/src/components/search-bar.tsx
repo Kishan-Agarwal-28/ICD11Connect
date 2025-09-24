@@ -7,7 +7,7 @@ import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
 interface SearchBarProps {
-  onSearchResults?: (results: any) => void;
+  onSearchResults?: (selection: { code: string; system: string; data: any }) => void;
 }
 
 export default function SearchBar({ onSearchResults }: SearchBarProps) {
@@ -22,9 +22,7 @@ export default function SearchBar({ onSearchResults }: SearchBarProps) {
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    if (searchResults && onSearchResults) {
-      onSearchResults(searchResults);
-    }
+    // Note: onSearchResults will be called when user clicks on a result
   };
 
   return (
@@ -57,19 +55,37 @@ export default function SearchBar({ onSearchResults }: SearchBarProps) {
           {searchResults.totalResults > 0 && (
             <div className="mt-2 max-h-40 overflow-y-auto border border-border rounded-md bg-white">
               {searchResults.results.icdCodes.slice(0, 3).map((code: any) => (
-                <div key={code.id} className="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0">
+                <div key={code.id} className="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0" 
+                     onClick={() => {
+                       if (onSearchResults) {
+                         onSearchResults({ code: code.code, system: 'icd11', data: code });
+                       }
+                       toast({ title: "Code Selected", description: `Selected ICD-11 code: ${code.code}` });
+                     }}>
                   <div className="text-xs font-medium text-primary">{code.code}</div>
                   <div className="text-xs text-foreground">{code.title}</div>
                 </div>
               ))}
               {searchResults.results.namasteCodes.slice(0, 3).map((code: any) => (
-                <div key={code.id} className="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0">
+                <div key={code.id} className="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0"
+                     onClick={() => {
+                       if (onSearchResults) {
+                         onSearchResults({ code: code.code, system: 'namaste', data: code });
+                       }
+                       toast({ title: "Code Selected", description: `Selected NAMASTE code: ${code.code}` });
+                     }}>
                   <div className="text-xs font-medium text-secondary">{code.code}</div>
                   <div className="text-xs text-foreground">{code.title}</div>
                 </div>
               ))}
               {searchResults.results.tm2Codes.slice(0, 3).map((code: any) => (
-                <div key={code.id} className="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0">
+                <div key={code.id} className="p-2 hover:bg-muted cursor-pointer border-b last:border-b-0"
+                     onClick={() => {
+                       if (onSearchResults) {
+                         onSearchResults({ code: code.code, system: 'tm2', data: code });
+                       }
+                       toast({ title: "Code Selected", description: `Selected TM2 code: ${code.code}` });
+                     }}>
                   <div className="text-xs font-medium text-accent">{code.code}</div>
                   <div className="text-xs text-foreground">{code.title}</div>
                 </div>

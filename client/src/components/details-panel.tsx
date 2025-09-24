@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlusCircle, ArrowLeftRight, Download, Settings } from "lucide-react";
 import { api } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 interface DetailsPanelProps {
   selectedCode: string | null;
@@ -11,6 +12,8 @@ interface DetailsPanelProps {
 }
 
 export default function DetailsPanel({ selectedCode, selectedSystem }: DetailsPanelProps) {
+  const { toast } = useToast();
+  
   const { data: systemStatus } = useQuery({
     queryKey: ["/api/status"],
     queryFn: api.getSystemStatus,
@@ -79,6 +82,20 @@ export default function DetailsPanel({ selectedCode, selectedSystem }: DetailsPa
             <Button 
               className="w-full justify-start h-auto p-4 bg-primary text-primary-foreground hover:bg-primary/90"
               data-testid="button-add-to-emr"
+              onClick={() => {
+                if (selectedCode && selectedSystem) {
+                  toast({ 
+                    title: "Added to EMR", 
+                    description: `Code ${selectedCode} from ${selectedSystem.toUpperCase()} system has been added to the EMR as a FHIR Condition resource.`
+                  });
+                } else {
+                  toast({ 
+                    title: "No Code Selected", 
+                    description: "Please select a code first to add to EMR.",
+                    variant: "destructive"
+                  });
+                }
+              }}
             >
               <PlusCircle className="w-5 h-5 mr-3" />
               <div className="text-left">
@@ -91,6 +108,20 @@ export default function DetailsPanel({ selectedCode, selectedSystem }: DetailsPa
               variant="outline" 
               className="w-full justify-start h-auto p-4"
               data-testid="button-map-codes"
+              onClick={() => {
+                if (selectedCode && selectedSystem) {
+                  toast({ 
+                    title: "Code Mapping", 
+                    description: `Showing mappings for ${selectedCode} (${selectedSystem.toUpperCase()}) to other terminology systems.`
+                  });
+                } else {
+                  toast({ 
+                    title: "No Code Selected", 
+                    description: "Please select a code first to view mappings.",
+                    variant: "destructive"
+                  });
+                }
+              }}
             >
               <ArrowLeftRight className="w-5 h-5 mr-3 text-accent" />
               <div className="text-left">
@@ -103,6 +134,30 @@ export default function DetailsPanel({ selectedCode, selectedSystem }: DetailsPa
               variant="outline" 
               className="w-full justify-start h-auto p-4"
               data-testid="button-export-data"
+              onClick={() => {
+                const exportData = {
+                  selectedCode,
+                  selectedSystem,
+                  timestamp: new Date().toISOString(),
+                  systemStatus,
+                  recentActivity: mockActivity
+                };
+                
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `icd-connect-export-${Date.now()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                toast({ 
+                  title: "Data Exported", 
+                  description: "System data has been exported as JSON file."
+                });
+              }}
             >
               <Download className="w-5 h-5 mr-3 text-secondary" />
               <div className="text-left">
@@ -121,7 +176,17 @@ export default function DetailsPanel({ selectedCode, selectedSystem }: DetailsPa
           </h3>
           <div className="space-y-3 text-sm">
             {mockApiEndpoints.map((endpoint, index) => (
-              <Card key={index} className="bg-muted">
+              <Card 
+                key={index} 
+                className="bg-muted hover:bg-muted/80 cursor-pointer transition-colors"
+                onClick={() => {
+                  navigator.clipboard.writeText(endpoint.endpoint);
+                  toast({ 
+                    title: "Endpoint Copied", 
+                    description: `${endpoint.endpoint} copied to clipboard`
+                  });
+                }}
+              >
                 <CardContent className="p-3">
                   <div className={`font-mono text-xs mb-1 ${endpoint.color}`}>{endpoint.method}</div>
                   <div className="font-mono text-xs text-foreground">{endpoint.endpoint}</div>

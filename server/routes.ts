@@ -144,6 +144,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Code mapping and translation endpoints
+  app.get("/api/mapping/code/:system/:code", async (req, res) => {
+    try {
+      const { system, code } = req.params;
+      const mappings = await storage.getMappingsForCode(system, code);
+      res.json(mappings);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch code mappings" });
+    }
+  });
+
   app.get("/api/mapping/:sourceSystem/:sourceCode/:targetSystem", async (req, res) => {
     try {
       const { sourceSystem, sourceCode, targetSystem } = req.params;

@@ -8,9 +8,10 @@ import { Table } from "lucide-react";
 interface SidebarNavigationProps {
   onCodeSelect: (code: string | null) => void;
   onSystemSelect: (system: string | null) => void;
+  onSearchResults?: (selection: { code: string; system: string; data: any }) => void;
 }
 
-export default function SidebarNavigation({ onCodeSelect, onSystemSelect }: SidebarNavigationProps) {
+export default function SidebarNavigation({ onCodeSelect, onSystemSelect, onSearchResults }: SidebarNavigationProps) {
   const [filters, setFilters] = useState({
     icd11: true,
     namaste: true,
@@ -25,7 +26,7 @@ export default function SidebarNavigation({ onCodeSelect, onSystemSelect }: Side
     <aside className="w-80 bg-white border-r border-border overflow-y-auto">
       <div className="p-6">
         {/* Search Bar */}
-        <SearchBar />
+        <SearchBar onSearchResults={onSearchResults} />
 
         {/* Filter Options */}
         <div className="mb-6">

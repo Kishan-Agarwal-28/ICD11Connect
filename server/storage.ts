@@ -183,20 +183,156 @@ export class MemStorage implements IStorage {
         mappingType: "exact",
         confidence: "high",
         isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "SID-DIG-003",
+        targetSystem: "ICD-11",
+        targetCode: "1A0Z",
+        mappingType: "broader",
+        confidence: "medium",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "UNA-RES-005",
+        targetSystem: "ICD-11",
+        targetCode: "J06.9",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "ICD-11",
+        sourceCode: "01",
+        targetSystem: "TM2",
+        targetCode: "TM-GI-001",
+        mappingType: "narrower",
+        confidence: "medium",
+        isActive: true
       }
     ];
 
-    // Seed the data
-    for (const icdCode of mockIcdCodes) {
-      await this.createIcdCode(icdCode);
+    // Seed the data directly into maps
+    const icdData = [
+      {
+        id: randomUUID(),
+        code: "01",
+        title: "Certain infectious or parasitic diseases",
+        description: "Diseases generally recognized as communicable or transmissible",
+        chapter: "01",
+        category: "Chapter",
+        parentCode: null,
+        children: ["1A00-1A9Z", "1B10-1B1Z"],
+        metadata: { level: 1 },
+        createdAt: new Date()
+      },
+      {
+        id: randomUUID(),
+        code: "1A00-1A9Z",
+        title: "Gastroenteritis and colitis of infectious origin",
+        description: "Gastroenteritis is characterized by inflammation of the gastrointestinal tract",
+        chapter: "01",
+        category: "Block",
+        parentCode: "01",
+        children: ["1A00", "1A0Y"],
+        metadata: { level: 2 },
+        createdAt: new Date()
+      },
+      {
+        id: randomUUID(),
+        code: "1A00",
+        title: "Cholera",
+        description: "An acute diarrhoeal infection caused by ingestion of food or water contaminated with the bacterium Vibrio cholerae",
+        chapter: "01",
+        category: "Category",
+        parentCode: "1A00-1A9Z",
+        children: null,
+        metadata: { level: 3 },
+        createdAt: new Date()
+      }
+    ];
+
+    const namasteData = [
+      {
+        id: randomUUID(),
+        code: "AYU-DIG-001",
+        title: "Grahani Roga",
+        description: "Digestive disorders characterized by irregular bowel movements and abdominal discomfort in Ayurveda",
+        system: "AYU",
+        category: "Digestive System",
+        icdMapping: "1A00-1A9Z",
+        tm2Mapping: "TM-GI-001",
+        metadata: { tradition: "Ayurveda", severity: "moderate" },
+        createdAt: new Date()
+      },
+      {
+        id: randomUUID(),
+        code: "SID-DIG-003",
+        title: "Vayvu Gunma",
+        description: "Wind-related digestive imbalance in Siddha medicine",
+        system: "SID",
+        category: "Digestive System",
+        icdMapping: "1A0Z",
+        tm2Mapping: "TM-GI-002",
+        metadata: { tradition: "Siddha", dosha: "vata" },
+        createdAt: new Date()
+      },
+      {
+        id: randomUUID(),
+        code: "UNA-RES-005",
+        title: "Nazla Zukam",
+        description: "Upper respiratory tract infection in Unani medicine",
+        system: "UNA",
+        category: "Respiratory System",
+        icdMapping: "J06.9",
+        tm2Mapping: "TM-RE-001",
+        metadata: { tradition: "Unani", temperament: "cold" },
+        createdAt: new Date()
+      }
+    ];
+
+    const tm2Data = [
+      {
+        id: randomUUID(),
+        code: "TM-GI-001",
+        title: "Digestive system pattern disorder",
+        description: "Traditional medicine pattern involving digestive system imbalances",
+        pattern: "Digestive Fire Imbalance",
+        icdMapping: "1A00-1A9Z",
+        namasteMapping: "AYU-DIG-001",
+        metadata: { system: "Traditional Medicine", category: "Digestive" },
+        createdAt: new Date()
+      },
+      {
+        id: randomUUID(),
+        code: "TM-RE-001",
+        title: "Respiratory system pattern disorder",
+        description: "Traditional medicine pattern involving respiratory system imbalances",
+        pattern: "Wind-Cold Pattern",
+        icdMapping: "J06.9",
+        namasteMapping: "UNA-RES-005",
+        metadata: { system: "Traditional Medicine", category: "Respiratory" },
+        createdAt: new Date()
+      }
+    ];
+
+    // Populate the maps
+    for (const item of icdData) {
+      this.icdCodes.set(item.id, item as IcdCode);
     }
 
-    for (const namasteCode of mockNamasteCodes) {
-      await this.createNamasteCode(namasteCode);
+    for (const item of namasteData) {
+      this.namasteCodes.set(item.id, item as NamasteCode);
     }
 
-    for (const tm2Code of mockTm2Codes) {
-      await this.createTm2Code(tm2Code);
+    for (const item of tm2Data) {
+      this.tm2Codes.set(item.id, item as Tm2Code);
+    }
+
+    // Add code mappings
+    for (const mapping of mockMappings) {
+      await this.createCodeMapping(mapping);
     }
 
     for (const mapping of mockMappings) {
@@ -236,7 +372,7 @@ export class MemStorage implements IStorage {
       id,
       description: insertCode.description || null,
       parentCode: insertCode.parentCode || null,
-      children: insertCode.children || null,
+      children: insertCode.children ? [...insertCode.children] : null,
       metadata: insertCode.metadata || null,
       createdAt: new Date(),
     };

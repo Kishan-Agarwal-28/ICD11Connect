@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronRight, Plus, Download, ExternalLink } from "lucide-react";
 import { api } from "@/lib/api";
 import CodeMapping from "./code-mapping";
+import { useToast } from "@/hooks/use-toast";
 
 interface MainContentProps {
   selectedCode: string | null;
@@ -13,6 +14,8 @@ interface MainContentProps {
 }
 
 export default function MainContent({ selectedCode, selectedSystem }: MainContentProps) {
+  const { toast } = useToast();
+  
   // Fetch code data from API based on selected code and system
   const { data: icdCode, isLoading: icdLoading } = useQuery({
     queryKey: ['/api/icd11/code', selectedCode],
@@ -205,11 +208,64 @@ export default function MainContent({ selectedCode, selectedSystem }: MainConten
                 </div>
               </div>
               <div className="flex space-x-2">
-                <Button data-testid="button-add-problem-list">
+                <Button 
+                  data-testid="button-add-problem-list"
+                  onClick={() => {
+                    toast({ 
+                      title: "Added to Problem List", 
+                      description: `${currentCodeData.title} (${currentCodeData.code}) has been added to the patient's problem list.`
+                    });
+                  }}
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Add to Problem List
                 </Button>
-                <Button variant="outline" data-testid="button-export-fhir">
+                <Button 
+                  variant="outline" 
+                  data-testid="button-export-fhir"
+                  onClick={() => {
+                    const fhirBundle = {
+                      resourceType: "Bundle",
+                      id: `${selectedSystem}-${selectedCode}-mapping`,
+                      type: "collection",
+                      entry: [{
+                        resource: {
+                          resourceType: "Condition",
+                          id: `condition-${selectedCode}`,
+                          code: {
+                            coding: [
+                              {
+                                system: selectedSystem === 'icd11' ? "http://id.who.int/icd/release/11/mms" :
+                                       selectedSystem === 'namaste' ? "http://namaste.gov.in/codes" :
+                                       "http://id.who.int/icd/release/11/tm2",
+                                code: currentCodeData.code,
+                                display: currentCodeData.title
+                              }
+                            ]
+                          },
+                          subject: {
+                            reference: "Patient/patient-abha-123456"
+                          }
+                        }
+                      }]
+                    };
+                    
+                    const blob = new Blob([JSON.stringify(fhirBundle, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `fhir-bundle-${selectedCode}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    toast({ 
+                      title: "FHIR Bundle Exported", 
+                      description: `FHIR bundle for ${currentCodeData.code} has been downloaded.`
+                    });
+                  }}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Export FHIR
                 </Button>
@@ -312,7 +368,18 @@ export default function MainContent({ selectedCode, selectedSystem }: MainConten
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {relatedCodes.map((code, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" data-testid={`card-related-${code.code}`}>
+                <Card 
+                  key={index} 
+                  className="hover:shadow-md transition-shadow cursor-pointer" 
+                  data-testid={`card-related-${code.code}`}
+                  onClick={() => {
+                    toast({ 
+                      title: "Code Selected", 
+                      description: `Selected related code: ${code.title} (${code.code})`
+                    });
+                    // In a real app, this would navigate to the selected code
+                  }}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <span className="text-sm font-medium text-primary">{code.code}</span>

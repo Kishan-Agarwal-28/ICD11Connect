@@ -8,6 +8,11 @@ export default function Dashboard() {
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
   const [selectedSystem, setSelectedSystem] = useState<string | null>(null);
 
+  const handleSearchResults = (selection: { code: string; system: string; data: any }) => {
+    setSelectedCode(selection.code);
+    setSelectedSystem(selection.system);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -42,6 +47,7 @@ export default function Dashboard() {
         <SidebarNavigation 
           onCodeSelect={setSelectedCode}
           onSystemSelect={setSelectedSystem}
+          onSearchResults={handleSearchResults}
         />
 
         {/* Main Content Area */}
