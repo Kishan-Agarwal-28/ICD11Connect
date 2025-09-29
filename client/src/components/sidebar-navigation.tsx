@@ -23,13 +23,18 @@ export default function SidebarNavigation({ onCodeSelect, onSystemSelect, onSear
   };
 
   return (
-    <aside className="w-80 bg-white border-r border-border overflow-y-auto">
-      <div className="p-6">
+    <aside className="w-full h-full bg-white overflow-y-auto">
+      <div className="p-4 lg:p-6">
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between mb-4 lg:hidden">
+          <h2 className="text-lg font-semibold text-foreground">Medical Codes</h2>
+        </div>
+
         {/* Search Bar */}
         <SearchBar onSearchResults={onSearchResults} />
 
-        {/* Filter Options */}
-        <div className="mb-6">
+        {/* Filter Options - Responsive */}
+        <div className="mb-4 lg:mb-6">
           <h3 className="text-sm font-medium text-foreground mb-3">Filter by System</h3>
           <div className="space-y-2">
             <div className="flex items-center space-x-2">

@@ -48,35 +48,38 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Header - Responsive */}
       <header className="bg-white border-b border-border shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Stethoscope className="text-primary-foreground text-lg" />
+            <div className="flex items-center space-x-2 lg:space-x-3">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Stethoscope className="text-primary-foreground text-sm lg:text-lg" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">MediSutra</h1>
-                <p className="text-sm text-muted-foreground">Traditional Medicine Integration Platform</p>
+                <h1 className="text-lg lg:text-xl font-bold text-foreground">MediSutra</h1>
+                <p className="text-xs lg:text-sm text-muted-foreground hidden sm:block">Traditional Medicine Integration Platform</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/docs">
-                <Button variant="outline" size="sm">
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  Documentation
-                </Button>
-              </Link>
-              <Link href="/api-docs">
-                <Button variant="outline" size="sm">
-                  <Code className="w-4 h-4 mr-2" />
-                  API Docs
-                </Button>
-              </Link>
+            <div className="flex items-center space-x-2 lg:space-x-4">
+              <div className="hidden md:flex items-center space-x-2">
+                <Link href="/docs">
+                  <Button variant="outline" size="sm">
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    Documentation
+                  </Button>
+                </Link>
+                <Link href="/api-docs">
+                  <Button variant="outline" size="sm">
+                    <Code className="w-4 h-4 mr-2" />
+                    API Docs
+                  </Button>
+                </Link>
+              </div>
               <Link href="/dashboard">
                 <Button size="sm">
-                  Launch Dashboard
+                  <span className="hidden sm:inline">Launch Dashboard</span>
+                  <span className="sm:hidden">Dashboard</span>
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
@@ -85,17 +88,17 @@ export default function Landing() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-accent/5 py-20">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <Badge className="mb-6 bg-primary/10 text-primary hover:bg-primary/20">
+      {/* Hero Section - Responsive */}
+      <section className="bg-gradient-to-br from-primary/5 to-accent/5 py-12 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6 text-center">
+          <Badge className="mb-4 lg:mb-6 bg-primary/10 text-primary hover:bg-primary/20 text-xs lg:text-sm">
             FHIR R4 Compliant • Traditional Medicine Integration
           </Badge>
-          <h1 className="text-5xl font-bold text-foreground mb-6 leading-tight">
-            Bridging Traditional Medicine<br />
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 lg:mb-6 leading-tight">
+            Bridging Traditional Medicine<br className="hidden sm:block" />
             <span className="text-primary">with Global Standards</span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base lg:text-xl text-muted-foreground mb-6 lg:mb-8 max-w-3xl mx-auto leading-relaxed">
             MediSutra integrates India's NAMASTE codes with WHO ICD-11 Traditional Medicine Module 2, 
             enabling dual-coding for traditional medicine systems while maintaining full FHIR R4 compliance 
             for modern EMR systems.

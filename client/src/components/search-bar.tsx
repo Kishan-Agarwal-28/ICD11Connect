@@ -26,27 +26,27 @@ export default function SearchBar({ onSearchResults }: SearchBarProps) {
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-4 lg:mb-6">
       <Label className="block text-sm font-medium text-foreground mb-2">
-        Search ICD-11 & NAMASTE Codes
+        Search Medical Codes
       </Label>
       <div className="relative">
         <Input
           type="text"
-          className="w-full px-4 py-3 pr-10 border border-border rounded-lg bg-white text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary"
-          placeholder="Search codes, descriptions, or symptoms..."
+          className="w-full px-3 lg:px-4 py-2 lg:py-3 pr-10 border border-border rounded-lg bg-white text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary text-sm lg:text-base"
+          placeholder="Search codes, symptoms..."
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
           data-testid="input-search"
         />
-        <Search className="absolute right-3 top-3.5 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute right-3 top-2.5 lg:top-3.5 w-4 h-4 text-muted-foreground" />
         {isLoading && (
-          <div className="absolute right-10 top-3.5 w-4 h-4 animate-spin border-2 border-primary border-t-transparent rounded-full" />
+          <div className="absolute right-10 top-2.5 lg:top-3.5 w-4 h-4 animate-spin border-2 border-primary border-t-transparent rounded-full" />
         )}
       </div>
       <div className="mt-2 text-xs text-muted-foreground flex items-center">
-        <Info className="w-3 h-3 mr-1" />
-        Auto-complete enabled for 4,500+ NAMASTE terms
+        <Info className="w-3 h-3 mr-1 flex-shrink-0" />
+        <span className="truncate">Auto-complete for 4,500+ NAMASTE terms</span>
       </div>
       
       {searchResults && (

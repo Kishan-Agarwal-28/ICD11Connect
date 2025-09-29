@@ -174,29 +174,25 @@ export default function MainContent({ selectedCode, selectedSystem }: MainConten
 
   return (
     <main className="flex-1 overflow-y-auto bg-muted">
-      <div className="p-6">
-        {/* Breadcrumb Navigation */}
-        <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-            <span>{selectedSystem?.toUpperCase()}</span>
-            <ChevronRight className="w-4 h-4" />
-            {selectedSystem === 'icd11' && icdCode && (
-              <>
-                <span>Chapter {icdCode.chapter}</span>
-                <ChevronRight className="w-4 h-4" />
-              </>
-            )}
-            <span className="text-foreground font-medium">{currentCodeData.title} ({currentCodeData.code})</span>
+      <div className="p-4 lg:p-6">
+        {/* Breadcrumb Navigation - Responsive */}
+        <nav className="mb-4 lg:mb-6">
+          <div className="flex items-center space-x-1 lg:space-x-2 text-xs lg:text-sm text-muted-foreground overflow-x-auto">
+            <span className="whitespace-nowrap">Healthcare Codes</span>
+            <ChevronRight className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
+            <span className="text-foreground font-medium whitespace-nowrap">{selectedSystem?.toUpperCase()}</span>
+            <ChevronRight className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
+            <span className="text-foreground font-medium truncate">{selectedCode}</span>
           </div>
         </nav>
 
-        {/* Main Content Header */}
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">{currentCodeData.title}</h2>
-                <div className="flex items-center space-x-4 text-sm">
+        {/* Main Content Header - Responsive */}
+        <Card className="mb-4 lg:mb-6">
+          <CardContent className="pt-4 lg:pt-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4 space-y-4 lg:space-y-0">
+              <div className="flex-1">
+                <h2 className="text-xl lg:text-2xl font-bold text-foreground mb-2">{currentCodeData.title}</h2>
+                <div className="flex flex-wrap items-center gap-2 text-sm">
                   <Badge variant="default" className="bg-primary text-primary-foreground">
                     {selectedSystem?.toUpperCase()}: {currentCodeData.code}
                   </Badge>
@@ -207,7 +203,7 @@ export default function MainContent({ selectedCode, selectedSystem }: MainConten
                   ))}
                 </div>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 lg:flex-shrink-0">
                 <Button 
                   data-testid="button-add-problem-list"
                   onClick={() => {
@@ -216,6 +212,8 @@ export default function MainContent({ selectedCode, selectedSystem }: MainConten
                       description: `${currentCodeData.title} (${currentCodeData.code}) has been added to the patient's problem list.`
                     });
                   }}
+                  size="sm"
+                  className="w-full sm:w-auto"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add to Problem List

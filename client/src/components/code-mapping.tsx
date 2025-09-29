@@ -42,31 +42,60 @@ export default function CodeMapping({ selectedCode, selectedSystem, codeMappings
       <CardContent className="pt-6">
         <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
           <ArrowLeftRight className="w-5 h-5 mr-2 text-primary" />
-          Code Mapping & Translation
+          One-to-One Code Mapping & Translation
         </h3>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* NAMASTE to ICD-11 Mapping */}
-          <div className="border border-border rounded-lg p-4">
-            <h4 className="font-semibold text-foreground mb-3">NAMASTE ↔ ICD-11 Translation</h4>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
+          {/* Cross-System Medical Code Mappings */}
+          <div className="border border-border rounded-lg p-3 lg:p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-foreground text-sm lg:text-base">Medical Code Mappings</h4>
+              <Badge variant="secondary" className="text-xs">
+                1:1 Mapping
+              </Badge>
+            </div>
             <div className="space-y-3">
               {codeMappings && codeMappings.length > 0 ? (
-                codeMappings.map((mapping, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted rounded" data-testid={`mapping-${index}`}>
-                    <div>
-                      <div className="font-medium text-sm">{mapping.sourceCode}</div>
-                      <div className="text-xs text-muted-foreground">{mapping.sourceSystem}</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0 mx-2" />
-                    <div>
-                      <div className="font-medium text-sm">{mapping.targetCode}</div>
-                      <div className="text-xs text-muted-foreground">{mapping.targetSystem} ({mapping.mappingType})</div>
-                    </div>
-                  </div>
-                ))
+                // Group mappings by target system for clean display
+                (() => {
+                  const groupedMappings = codeMappings.reduce((acc, mapping) => {
+                    const key = mapping.targetSystem;
+                    if (!acc[key]) acc[key] = [];
+                    acc[key].push(mapping);
+                    return acc;
+                  }, {} as Record<string, any[]>);
+
+                  return Object.entries(groupedMappings).map(([targetSystem, mappings]) => {
+                    const mapping = mappings[0]; // Take first mapping only (1:1)
+                    return (
+                      <div key={targetSystem} className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                        {/* NAMASTE Side */}
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-sm text-foreground">{mapping.sourceTitle}</div>
+                          <div className="text-xs text-muted-foreground">NAMASTE: {mapping.sourceCode}</div>
+                        </div>
+                        
+                        {/* Double Arrow */}
+                        <div className="mx-4">
+                          <ArrowLeftRight className="w-5 h-5 text-primary" />
+                        </div>
+                        
+                        {/* Target System Side */}
+                        <div className="flex-1 text-right">
+                          <div className="font-semibold text-sm text-foreground">{mapping.targetTitle}</div>
+                          <div className="text-xs text-muted-foreground">{mapping.targetSystem}: {mapping.targetCode}</div>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()
               ) : (
-                <div className="text-center py-4 text-muted-foreground">
-                  <p className="text-sm">No mappings available for this code</p>
+                <div className="text-center py-6 text-muted-foreground">
+                  <div className="mb-2">
+                    <ArrowLeftRight className="w-8 h-8 mx-auto text-muted-foreground/50" />
+                  </div>
+                  <p className="text-sm font-medium">No mappings available</p>
+                  <p className="text-xs mt-1">Select a NAMASTE code to view translations</p>
                 </div>
               )}
             </div>

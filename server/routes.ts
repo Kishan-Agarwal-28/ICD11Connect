@@ -147,7 +147,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/mapping/code/:system/:code", async (req, res) => {
     try {
       const { system, code } = req.params;
-      const mappings = await storage.getMappingsForCode(system, code);
+      
+      // Normalize system names to match the mapping data
+      const normalizeSystem = (sys: string): string => {
+        switch (sys.toLowerCase()) {
+          case 'namaste':
+            return 'NAMASTE';
+          case 'icd11':
+            return 'ICD-11';
+          case 'tm2':
+            return 'TM2';
+          default:
+            return sys.toUpperCase();
+        }
+      };
+      
+      const normalizedSystem = normalizeSystem(system);
+      
+      const mappings = await (storage as any).getMappingsWithNames(normalizedSystem, code);
       res.json(mappings);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch code mappings" });
@@ -157,7 +174,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/mapping/:sourceSystem/:sourceCode/:targetSystem", async (req, res) => {
     try {
       const { sourceSystem, sourceCode, targetSystem } = req.params;
-      const mappings = await storage.translateCode(sourceSystem, sourceCode, targetSystem);
+      
+      // Normalize system names to match the mapping data
+      const normalizeSystem = (sys: string): string => {
+        switch (sys.toLowerCase()) {
+          case 'namaste':
+            return 'NAMASTE';
+          case 'icd11':
+            return 'ICD-11';
+          case 'tm2':
+            return 'TM2';
+          default:
+            return sys.toUpperCase();
+        }
+      };
+      
+      const normalizedSourceSystem = normalizeSystem(sourceSystem);
+      const normalizedTargetSystem = normalizeSystem(targetSystem);
+      
+      const mappings = await storage.translateCode(normalizedSourceSystem, sourceCode, normalizedTargetSystem);
       res.json(mappings);
     } catch (error) {
       res.status(500).json({ error: "Failed to translate code" });
@@ -187,24 +222,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // FHIR Bundle endpoint
-  app.post("/api/fhir/bundle", async (req, res) => {
+  // Debug endpoint to check mappings
+  app.get("/api/debug/mappings", async (req, res) => {
     try {
-      // Validate FHIR Bundle structure
-      const bundle = req.body;
-      if (!bundle.resourceType || bundle.resourceType !== "Bundle") {
-        return res.status(400).json({ error: "Invalid FHIR Bundle format" });
-      }
-
-      // Process bundle entries - in a real implementation, this would
-      // validate against FHIR R4 schema and integrate with EMR system
-      res.json({
-        message: "FHIR Bundle processed successfully",
-        bundleId: bundle.id,
-        entries: bundle.entry?.length || 0
+      const mappings = await (storage as any).getAllMappings();
+      res.json({ 
+        totalMappings: mappings.length,
+        mappings: mappings 
       });
     } catch (error) {
-      res.status(500).json({ error: "Failed to process FHIR Bundle" });
+      res.status(500).json({ error: "Failed to fetch debug mappings" });
+    }
+  });
+
+  // FHIR endpoints
+  app.post("/api/fhir/bundle", async (req, res) => {
+    try {
+      const bundle = req.body;
+      // Mock FHIR processing - in real app this would validate and store
+      const result = {
+        message: "FHIR Bundle processed successfully",
+        bundleId: bundle.id || "generated-id",
+        entries: bundle.entry?.length || 0
+      };
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process FHIR bundle" });
     }
   });
 
@@ -234,6 +277,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch system status" });
+    }
+  });
+
+  // One-to-one mapping validation endpoint
+  app.get("/api/validate/mappings", async (req, res) => {
+    try {
+      const validation = await storage.validateOneToOneMappings();
+      res.json({
+        mappingType: "one-to-one",
+        ...validation
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to validate mappings" });
     }
   });
 

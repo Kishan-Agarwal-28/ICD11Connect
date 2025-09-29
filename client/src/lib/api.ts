@@ -68,4 +68,10 @@ export const api = {
     const res = await apiRequest("GET", "/api/activity/recent");
     return res.json();
   },
+
+  // Validation endpoints
+  validateMappings: async (): Promise<{mappingType: string, isValid: boolean, violations: string[]}> => {
+    const res = await apiRequest("GET", "/api/validate/mappings");
+    return res.json();
+  },
 };
