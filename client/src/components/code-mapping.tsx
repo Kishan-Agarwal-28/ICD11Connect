@@ -45,8 +45,8 @@ export default function CodeMapping({ selectedCode, selectedSystem, codeMappings
           One-to-One Code Mapping & Translation
         </h3>
         
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
-          {/* Cross-System Medical Code Mappings */}
+        <div className="space-y-4 lg:space-y-6">
+          {/* Cross-System Medical Code Mappings - Full width on first row */}
           <div className="border border-border rounded-lg p-3 lg:p-4">
             <div className="flex items-center justify-between mb-3">
               <h4 className="font-semibold text-foreground text-sm lg:text-base">Medical Code Mappings</h4>
@@ -101,7 +101,8 @@ export default function CodeMapping({ selectedCode, selectedSystem, codeMappings
             </div>
           </div>
 
-          {/* API Integration Status */}
+          {/* API Integration Status - Takes 1 column on large screens */}
+                    {/* API Integration Status - Takes 1 column on large screens */}
           <div className="border border-border rounded-lg p-4">
             <h4 className="font-semibold text-foreground mb-3">API Integration Status</h4>
             <div className="space-y-3">
