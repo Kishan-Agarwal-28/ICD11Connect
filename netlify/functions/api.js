@@ -1,4 +1,4 @@
-// netlify/functions/storage.ts
+// netlify/functions/api.ts
 import { randomUUID } from "crypto";
 var NetlifyStorage = class {
   icdCodes = /* @__PURE__ */ new Map();
@@ -6,10 +6,9 @@ var NetlifyStorage = class {
   tm2Codes = /* @__PURE__ */ new Map();
   codeMappings = /* @__PURE__ */ new Map();
   searchActivities = /* @__PURE__ */ new Map();
-  constructor() {
-    this.initializeMockData();
-  }
+  initialized = false;
   async initializeMockData() {
+    if (this.initialized) return;
     const namasteData = [
       {
         code: "AYU-DIG-001",
@@ -140,120 +139,6 @@ var NetlifyStorage = class {
         metadata: { system: "Traditional Medicine", category: "Skin" }
       }
     ];
-    const mockMappings = [
-      // AYU-DIG-001 → 1A00-1A9Z (ICD-11) & TM-GI-001 (TM2)
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "AYU-DIG-001",
-        targetSystem: "ICD-11",
-        targetCode: "1A00-1A9Z",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "AYU-DIG-001",
-        targetSystem: "TM2",
-        targetCode: "TM-GI-001",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      // SID-DIG-003 → 1A0Z (ICD-11) & TM-GI-002 (TM2)
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "SID-DIG-003",
-        targetSystem: "ICD-11",
-        targetCode: "1A0Z",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "SID-DIG-003",
-        targetSystem: "TM2",
-        targetCode: "TM-GI-002",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      // UNA-RES-005 → J06.9 (ICD-11) & TM-RE-001 (TM2)
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "UNA-RES-005",
-        targetSystem: "ICD-11",
-        targetCode: "J06.9",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "UNA-RES-005",
-        targetSystem: "TM2",
-        targetCode: "TM-RE-001",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      // Additional mappings for new codes
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "AYU-CIR-002",
-        targetSystem: "ICD-11",
-        targetCode: "D69.9",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "AYU-CIR-002",
-        targetSystem: "TM2",
-        targetCode: "TM-CI-001",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "SID-NEU-004",
-        targetSystem: "ICD-11",
-        targetCode: "G93.9",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "SID-NEU-004",
-        targetSystem: "TM2",
-        targetCode: "TM-NE-001",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "UNA-SKI-006",
-        targetSystem: "ICD-11",
-        targetCode: "L99",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "NAMASTE",
-        sourceCode: "UNA-SKI-006",
-        targetSystem: "TM2",
-        targetCode: "TM-SK-001",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      }
-    ];
     const icdData = [
       {
         id: randomUUID(),
@@ -340,9 +225,121 @@ var NetlifyStorage = class {
         createdAt: /* @__PURE__ */ new Date()
       }
     ];
+    const mockMappings = [
+      // NAMASTE to ICD-11
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "AYU-DIG-001",
+        targetSystem: "ICD-11",
+        targetCode: "1A00-1A9Z",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "SID-DIG-003",
+        targetSystem: "ICD-11",
+        targetCode: "1A0Z",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "UNA-RES-005",
+        targetSystem: "ICD-11",
+        targetCode: "J06.9",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "AYU-CIR-002",
+        targetSystem: "ICD-11",
+        targetCode: "D69.9",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "SID-NEU-004",
+        targetSystem: "ICD-11",
+        targetCode: "G93.9",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "UNA-SKI-006",
+        targetSystem: "ICD-11",
+        targetCode: "L99",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      // NAMASTE to TM2
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "AYU-DIG-001",
+        targetSystem: "TM2",
+        targetCode: "TM-GI-001",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "SID-DIG-003",
+        targetSystem: "TM2",
+        targetCode: "TM-GI-002",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "UNA-RES-005",
+        targetSystem: "TM2",
+        targetCode: "TM-RE-001",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "AYU-CIR-002",
+        targetSystem: "TM2",
+        targetCode: "TM-CI-001",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "SID-NEU-004",
+        targetSystem: "TM2",
+        targetCode: "TM-NE-001",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      },
+      {
+        sourceSystem: "NAMASTE",
+        sourceCode: "UNA-SKI-006",
+        targetSystem: "TM2",
+        targetCode: "TM-SK-001",
+        mappingType: "exact",
+        confidence: "high",
+        isActive: true
+      }
+    ];
     for (const namasteItem of namasteData) {
       const id = randomUUID();
-      await this.createNamasteCode({
+      this.namasteCodes.set(id, {
         ...namasteItem,
         id,
         createdAt: /* @__PURE__ */ new Date()
@@ -350,7 +347,7 @@ var NetlifyStorage = class {
     }
     for (const tm2Item of tm2Data) {
       const id = randomUUID();
-      await this.createTm2Code({
+      this.tm2Codes.set(id, {
         ...tm2Item,
         id,
         createdAt: /* @__PURE__ */ new Date()
@@ -361,118 +358,27 @@ var NetlifyStorage = class {
     }
     const enhancedMappings = [
       ...mockMappings,
-      // Reverse mappings - exactly one mapping per code pair
-      // ICD-11 to NAMASTE
-      {
-        sourceSystem: "ICD-11",
-        sourceCode: "1A00-1A9Z",
-        targetSystem: "NAMASTE",
-        targetCode: "AYU-DIG-001",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "ICD-11",
-        sourceCode: "1A0Z",
-        targetSystem: "NAMASTE",
-        targetCode: "SID-DIG-003",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "ICD-11",
-        sourceCode: "J06.9",
-        targetSystem: "NAMASTE",
-        targetCode: "UNA-RES-005",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "ICD-11",
-        sourceCode: "D69.9",
-        targetSystem: "NAMASTE",
-        targetCode: "AYU-CIR-002",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "ICD-11",
-        sourceCode: "G93.9",
-        targetSystem: "NAMASTE",
-        targetCode: "SID-NEU-004",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "ICD-11",
-        sourceCode: "L99",
-        targetSystem: "NAMASTE",
-        targetCode: "UNA-SKI-006",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      // TM2 to NAMASTE
-      {
-        sourceSystem: "TM2",
-        sourceCode: "TM-GI-001",
-        targetSystem: "NAMASTE",
-        targetCode: "AYU-DIG-001",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "TM2",
-        sourceCode: "TM-GI-002",
-        targetSystem: "NAMASTE",
-        targetCode: "SID-DIG-003",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "TM2",
-        sourceCode: "TM-RE-001",
-        targetSystem: "NAMASTE",
-        targetCode: "UNA-RES-005",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "TM2",
-        sourceCode: "TM-CI-001",
-        targetSystem: "NAMASTE",
-        targetCode: "AYU-CIR-002",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "TM2",
-        sourceCode: "TM-NE-001",
-        targetSystem: "NAMASTE",
-        targetCode: "SID-NEU-004",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      {
-        sourceSystem: "TM2",
-        sourceCode: "TM-SK-001",
-        targetSystem: "NAMASTE",
-        targetCode: "UNA-SKI-006",
-        mappingType: "exact",
-        confidence: "high",
-        isActive: true
-      },
-      // TM2 to ICD-11
+      // Reverse mappings (ICD-11 to NAMASTE)
+      ...mockMappings.filter((m) => m.targetSystem === "ICD-11").map((m) => ({
+        sourceSystem: m.targetSystem,
+        sourceCode: m.targetCode,
+        targetSystem: m.sourceSystem,
+        targetCode: m.sourceCode,
+        mappingType: m.mappingType,
+        confidence: m.confidence,
+        isActive: m.isActive
+      })),
+      // Reverse mappings (TM2 to NAMASTE)
+      ...mockMappings.filter((m) => m.targetSystem === "TM2").map((m) => ({
+        sourceSystem: m.targetSystem,
+        sourceCode: m.targetCode,
+        targetSystem: m.sourceSystem,
+        targetCode: m.sourceCode,
+        mappingType: m.mappingType,
+        confidence: m.confidence,
+        isActive: m.isActive
+      })),
+      // TM2 to ICD-11 mappings
       {
         sourceSystem: "TM2",
         sourceCode: "TM-GI-001",
@@ -527,7 +433,7 @@ var NetlifyStorage = class {
         confidence: "high",
         isActive: true
       },
-      // ICD-11 to TM2
+      // ICD-11 to TM2 mappings
       {
         sourceSystem: "ICD-11",
         sourceCode: "1A00-1A9Z",
@@ -584,66 +490,29 @@ var NetlifyStorage = class {
       }
     ];
     for (const mapping of enhancedMappings) {
-      await this.createCodeMapping(mapping);
+      const id = randomUUID();
+      this.codeMappings.set(id, {
+        ...mapping,
+        id,
+        createdAt: /* @__PURE__ */ new Date()
+      });
     }
+    this.initialized = true;
   }
-  // Helper methods for creating data
-  async createNamasteCode(data) {
-    const namasteCode = {
-      id: data.id,
-      code: data.code,
-      title: data.title,
-      description: data.description,
-      traditionalSystem: data.traditionalSystem,
-      category: data.category,
-      metadata: data.metadata,
-      createdAt: data.createdAt
-    };
-    this.namasteCodes.set(data.id, namasteCode);
-    return namasteCode;
-  }
-  async createTm2Code(data) {
-    const tm2Code = {
-      id: data.id,
-      code: data.code,
-      title: data.title,
-      description: data.description,
-      pattern: data.pattern,
-      icdMapping: data.icdMapping,
-      namasteMapping: data.namasteMapping,
-      metadata: data.metadata,
-      createdAt: data.createdAt
-    };
-    this.tm2Codes.set(data.id, tm2Code);
-    return tm2Code;
-  }
-  async createCodeMapping(mapping) {
-    const id = randomUUID();
-    const codeMapping = {
-      id,
-      sourceSystem: mapping.sourceSystem,
-      sourceCode: mapping.sourceCode,
-      targetSystem: mapping.targetSystem,
-      targetCode: mapping.targetCode,
-      mappingType: mapping.mappingType,
-      confidence: mapping.confidence,
-      isActive: mapping.isActive,
-      createdAt: /* @__PURE__ */ new Date()
-    };
-    this.codeMappings.set(id, codeMapping);
-    return codeMapping;
-  }
-  // Getter methods for Netlify functions
   async getIcdCodeByCode(code) {
+    await this.initializeMockData();
     return Array.from(this.icdCodes.values()).find((icd) => icd.code === code);
   }
   async getNamasteCodeByCode(code) {
+    await this.initializeMockData();
     return Array.from(this.namasteCodes.values()).find((namaste) => namaste.code === code);
   }
   async getTm2CodeByCode(code) {
+    await this.initializeMockData();
     return Array.from(this.tm2Codes.values()).find((tm2) => tm2.code === code);
   }
   async getMappingsWithNames(system, code) {
+    await this.initializeMockData();
     const mappings = Array.from(this.codeMappings.values()).filter(
       (mapping) => mapping.sourceSystem === system && mapping.sourceCode === code && mapping.isActive
     );
@@ -684,6 +553,7 @@ var NetlifyStorage = class {
     return enhancedMappings;
   }
   async globalSearch(query) {
+    await this.initializeMockData();
     const searchTerm = query.toLowerCase();
     const icdCodes = Array.from(this.icdCodes.values()).filter(
       (icd) => icd.code.toLowerCase().includes(searchTerm) || icd.title.toLowerCase().includes(searchTerm) || icd.description?.toLowerCase().includes(searchTerm)
@@ -708,9 +578,7 @@ var NetlifyStorage = class {
     return activity;
   }
 };
-var netlifyStorage = new NetlifyStorage();
-
-// netlify/functions/api.ts
+var storage = new NetlifyStorage();
 var normalizeSystem = (system) => {
   const systemMap = {
     "namaste": "NAMASTE",
@@ -745,9 +613,9 @@ var handler = async (event, context) => {
           body: JSON.stringify({ error: "Query parameter 'q' is required" })
         };
       }
-      const results = await netlifyStorage.globalSearch(query);
+      const results = await storage.globalSearch(query);
       const totalResults = results.icdCodes.length + results.namasteCodes.length + results.tm2Codes.length;
-      await netlifyStorage.logSearchActivity({
+      await storage.logSearchActivity({
         query,
         resultCount: totalResults.toString()
       });
@@ -770,7 +638,7 @@ var handler = async (event, context) => {
           body: JSON.stringify({ error: "Code parameter is required" })
         };
       }
-      const icdCode = await netlifyStorage.getIcdCodeByCode(code);
+      const icdCode = await storage.getIcdCodeByCode(code);
       if (!icdCode) {
         return {
           statusCode: 404,
@@ -793,7 +661,7 @@ var handler = async (event, context) => {
           body: JSON.stringify({ error: "Code parameter is required" })
         };
       }
-      const namasteCode = await netlifyStorage.getNamasteCodeByCode(code);
+      const namasteCode = await storage.getNamasteCodeByCode(code);
       if (!namasteCode) {
         return {
           statusCode: 404,
@@ -816,7 +684,7 @@ var handler = async (event, context) => {
           body: JSON.stringify({ error: "Code parameter is required" })
         };
       }
-      const tm2Code = await netlifyStorage.getTm2CodeByCode(code);
+      const tm2Code = await storage.getTm2CodeByCode(code);
       if (!tm2Code) {
         return {
           statusCode: 404,
@@ -840,7 +708,7 @@ var handler = async (event, context) => {
           body: JSON.stringify({ error: "System and code parameters are required" })
         };
       }
-      const mappings = await netlifyStorage.getMappingsWithNames(system, code);
+      const mappings = await storage.getMappingsWithNames(system, code);
       return {
         statusCode: 200,
         headers,
@@ -858,7 +726,7 @@ var handler = async (event, context) => {
           body: JSON.stringify({ error: "Source system, source code, and target system are required" })
         };
       }
-      const mappings = await netlifyStorage.getMappingsWithNames(sourceSystem, sourceCode);
+      const mappings = await storage.getMappingsWithNames(sourceSystem, sourceCode);
       const filteredMappings = mappings.filter((mapping) => mapping.targetSystem === targetSystem);
       return {
         statusCode: 200,

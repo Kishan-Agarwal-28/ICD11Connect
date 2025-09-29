@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run netlify:build"
   functions = "netlify/functions"
   publish = "dist"
 
@@ -8,7 +8,12 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 [[headers]]
