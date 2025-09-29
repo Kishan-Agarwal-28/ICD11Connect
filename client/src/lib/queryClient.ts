@@ -12,7 +12,14 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  // Use environment-appropriate base URL
+  const baseUrl = import.meta.env.PROD 
+    ? window.location.origin 
+    : 'http://localhost:5000';
+  
+  const fullUrl = url.startsWith('/api') ? `${baseUrl}${url}` : url;
+  
+  const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
