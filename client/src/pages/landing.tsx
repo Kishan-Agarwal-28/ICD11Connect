@@ -233,6 +233,128 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* WHO ICD-11 Integration Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-blue-100 text-blue-700 hover:bg-blue-200">
+              NEW: WHO ICD-11 API Integration
+            </Badge>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Powered by WHO ICD-11 API
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Direct integration with WHO's ICD-11 API provides real-time access to Traditional 
+              Medicine Module 2 (TM2) and Biomedicine codes with automatic synchronization.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <Card className="bg-white">
+              <CardHeader>
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                  <Globe className="w-6 h-6 text-blue-600" />
+                </div>
+                <CardTitle className="text-lg">WHO ICD-11 Search</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Search TM2 and Biomedicine codes directly from WHO's API with real-time results
+                </p>
+                <Link href="/who-search">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Try WHO Search
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white">
+              <CardHeader>
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                  <Database className="w-6 h-6 text-green-600" />
+                </div>
+                <CardTitle className="text-lg">NAMASTE CSV Import</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Import NAMASTE codes from CSV and auto-generate FHIR resources
+                </p>
+                <Link href="/namaste-import">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Import Codes
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white">
+              <CardHeader>
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                  <Code className="w-6 h-6 text-purple-600" />
+                </div>
+                <CardTitle className="text-lg">FHIR Generator</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Generate FHIR R4 resources including CodeSystem, ConceptMap, and Condition
+                </p>
+                <Link href="/fhir-generator">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Generate FHIR
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="bg-white">
+              <CardHeader>
+                <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mb-3">
+                  <Zap className="w-6 h-6 text-amber-600" />
+                </div>
+                <CardTitle className="text-lg">Auto-Sync with WHO</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Keep your terminology database up-to-date with automatic synchronization from WHO ICD-11
+                </p>
+                <Link href="/who-sync">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Manage Sync
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white">
+              <CardHeader>
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-3">
+                  <Shield className="w-6 h-6 text-red-600" />
+                </div>
+                <CardTitle className="text-lg">Compliance Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Patient consent and audit trails per India's 2016 EHR Standards and ISO 22600
+                </p>
+                <Link href="/compliance">
+                  <Button variant="outline" size="sm" className="w-full">
+                    View Compliance
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="max-w-4xl mx-auto px-6 text-center">

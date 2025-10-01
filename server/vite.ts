@@ -68,7 +68,9 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  // In production, the bundled server is in dist/, so look for public in dist/../server/public
+  // which resolves to server/public
+  const distPath = path.resolve(import.meta.dirname, "../server/public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(

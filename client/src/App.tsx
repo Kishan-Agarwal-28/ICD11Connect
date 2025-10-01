@@ -7,6 +7,11 @@ import Dashboard from "@/pages/dashboard";
 import Landing from "@/pages/landing";
 import Documentation from "@/pages/documentation";
 import ApiDocumentation from "@/pages/api-documentation";
+import WhoSearchPage from "@/pages/who-search";
+import NamesteImportPage from "@/pages/namaste-import";
+import FhirGeneratorPage from "@/pages/fhir-generator";
+import WhoSyncPage from "@/pages/who-sync";
+import CompliancePage from "@/pages/compliance";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +21,11 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/docs" component={Documentation} />
       <Route path="/api-docs" component={ApiDocumentation} />
+      <Route path="/who-search" component={WhoSearchPage} />
+      <Route path="/namaste-import" component={NamesteImportPage} />
+      <Route path="/fhir-generator" component={FhirGeneratorPage} />
+      <Route path="/who-sync" component={WhoSyncPage} />
+      <Route path="/compliance" component={CompliancePage} />
       <Route component={NotFound} />
     </Switch>
   );

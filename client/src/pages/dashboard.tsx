@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Search, Upload, FileJson, RefreshCw, ShieldCheck, Home } from "lucide-react";
+import { Link } from "wouter";
 import SidebarNavigation from "@/components/sidebar-navigation";
 import MainContent from "@/components/main-content";
 import DetailsPanel from "@/components/details-panel";
 import { Stethoscope, Plug } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Dashboard() {
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
@@ -71,7 +73,52 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="flex h-[calc(100vh-80px)]">
+      {/* Navigation Menu */}
+      <nav className="bg-white border-b border-border">
+        <div className="max-w-full px-4 lg:px-6">
+          <div className="flex items-center space-x-1 overflow-x-auto">
+            <Link href="/dashboard">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                <Home className="w-4 h-4" />
+                <span className="hidden sm:inline">Code Browser</span>
+              </Button>
+            </Link>
+            <Link href="/who-search">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                <span className="hidden sm:inline">WHO Search</span>
+                <Badge variant="secondary" className="hidden md:inline text-xs">NEW</Badge>
+              </Button>
+            </Link>
+            <Link href="/namaste-import">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                <Upload className="w-4 h-4" />
+                <span className="hidden sm:inline">CSV Import</span>
+              </Button>
+            </Link>
+            <Link href="/fhir-generator">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                <FileJson className="w-4 h-4" />
+                <span className="hidden sm:inline">FHIR Generator</span>
+              </Button>
+            </Link>
+            <Link href="/who-sync">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                <RefreshCw className="w-4 h-4" />
+                <span className="hidden sm:inline">WHO Sync</span>
+              </Button>
+            </Link>
+            <Link href="/compliance">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4" />
+                <span className="hidden sm:inline">Compliance</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      <div className="flex h-[calc(100vh-136px)]">
         {/* Sidebar Navigation - Responsive */}
         <div className={`
           fixed inset-y-0 left-0 z-50 bg-white border-r border-border transform transition-transform duration-300 ease-in-out

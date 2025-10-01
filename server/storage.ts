@@ -26,6 +26,7 @@ export interface IStorage {
   // Code Mapping operations
   getCodeMapping(id: string): Promise<CodeMapping | undefined>;
   getMappingsForCode(system: string, code: string): Promise<CodeMapping[]>;
+  getMappingsBetweenSystems(sourceSystem: string, targetSystem: string): Promise<CodeMapping[]>;
   translateCode(sourceSystem: string, sourceCode: string, targetSystem: string): Promise<CodeMapping[]>;
   createCodeMapping(mapping: InsertCodeMapping): Promise<CodeMapping>;
 
@@ -927,7 +928,7 @@ export class MemStorage implements IStorage {
     
     const enhancedMappings = [];
     
-    for (const mapping of uniqueMappings.values()) {
+    for (const mapping of Array.from(uniqueMappings.values())) {
       // Get source code details
       let sourceTitle = mapping.sourceCode;
       if (mapping.sourceSystem === 'ICD-11') {
@@ -962,6 +963,14 @@ export class MemStorage implements IStorage {
     }
     
     return enhancedMappings;
+  }
+
+  async getMappingsBetweenSystems(sourceSystem: string, targetSystem: string): Promise<CodeMapping[]> {
+    return Array.from(this.codeMappings.values()).filter(mapping => 
+      mapping.sourceSystem === sourceSystem && 
+      mapping.targetSystem === targetSystem &&
+      mapping.isActive
+    );
   }
 
   async translateCode(sourceSystem: string, sourceCode: string, targetSystem: string): Promise<CodeMapping[]> {

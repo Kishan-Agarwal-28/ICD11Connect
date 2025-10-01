@@ -46,7 +46,7 @@ export default function CodeMapping({ selectedCode, selectedSystem, codeMappings
         </h3>
         
         <div className="space-y-4 lg:space-y-6">
-          {/* Cross-System Medical Code Mappings - Full width on first row */}
+          {/* Cross-System Medical Code Mappigs - Full width on first row */}
           <div className="border border-border rounded-lg p-3 lg:p-4">
             <div className="flex items-center justify-between mb-3">
               <h4 className="font-semibold text-foreground text-sm lg:text-base">Medical Code Mappings</h4>
@@ -66,7 +66,7 @@ export default function CodeMapping({ selectedCode, selectedSystem, codeMappings
                   }, {} as Record<string, any[]>);
 
                   return Object.entries(groupedMappings).map(([targetSystem, mappings]) => {
-                    const mapping = mappings[0]; // Take first mapping only (1:1)
+                    const mapping = (mappings as any[])[0]; // Take first mapping only (1:1)
                     return (
                       <div key={targetSystem} className="flex items-center justify-between p-4 bg-muted rounded-lg">
                         {/* NAMASTE Side */}
