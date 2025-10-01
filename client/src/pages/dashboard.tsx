@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, Search, Upload, FileJson, RefreshCw, ShieldCheck, Home } from "lucide-react";
+import { Menu, Search, Upload, FileJson, RefreshCw, ShieldCheck, Home, GraduationCap } from "lucide-react";
 import { Link } from "wouter";
 import SidebarNavigation from "@/components/sidebar-navigation";
 import MainContent from "@/components/main-content";
@@ -112,6 +112,13 @@ export default function Dashboard() {
               <Button variant="ghost" size="sm" className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
                 <span className="hidden sm:inline">Compliance</span>
+              </Button>
+            </Link>
+            <Link href="/learn-ayurveda">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                <GraduationCap className="w-4 h-4" />
+                <span className="hidden sm:inline">Learn Ayurveda</span>
+                <Badge variant="secondary" className="hidden md:inline text-xs">NEW</Badge>
               </Button>
             </Link>
           </div>

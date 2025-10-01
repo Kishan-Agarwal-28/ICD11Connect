@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Home, Search, Upload, FileJson, RefreshCw, ShieldCheck, Stethoscope } from "lucide-react";
+import { Home, Search, Upload, FileJson, RefreshCw, ShieldCheck, Stethoscope, GraduationCap } from "lucide-react";
 import { Link, useRoute } from "wouter";
 
 export default function AppNavigation() {
@@ -10,6 +10,7 @@ export default function AppNavigation() {
   const [isFhir] = useRoute("/fhir-generator");
   const [isSync] = useRoute("/who-sync");
   const [isCompliance] = useRoute("/compliance");
+  const [isLearn] = useRoute("/learn-ayurveda");
 
   const getVariant = (isActive: boolean) => (isActive ? "default" : "ghost");
 
@@ -83,6 +84,13 @@ export default function AppNavigation() {
               <Button variant={getVariant(isCompliance)} size="sm" className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
                 <span className="hidden sm:inline">Compliance</span>
+              </Button>
+            </Link>
+            <Link href="/learn-ayurveda">
+              <Button variant={getVariant(isLearn)} size="sm" className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0">
+                <GraduationCap className="w-4 h-4" />
+                <span className="hidden sm:inline">Learn Ayurveda</span>
+                <span className="sm:hidden">Learn</span>
               </Button>
             </Link>
           </div>

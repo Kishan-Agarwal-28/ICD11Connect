@@ -12,6 +12,7 @@ import NamesteImportPage from "@/pages/namaste-import";
 import FhirGeneratorPage from "@/pages/fhir-generator";
 import WhoSyncPage from "@/pages/who-sync";
 import CompliancePage from "@/pages/compliance";
+import LearnAyurvedaPage from "@/pages/learn-ayurveda";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/fhir-generator" component={FhirGeneratorPage} />
       <Route path="/who-sync" component={WhoSyncPage} />
       <Route path="/compliance" component={CompliancePage} />
+      <Route path="/learn-ayurveda" component={LearnAyurvedaPage} />
       <Route component={NotFound} />
     </Switch>
   );
